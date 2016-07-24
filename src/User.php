@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Created by PhpStorm.
  * User: pekowal
@@ -53,12 +52,13 @@ class User
         $this->isActive = 1;
     }
 
-    public function loadFromDB(mysqli $conn , $id){
-        $sql = 'SELECT FORM Users WHERE id='.$id;
+    public function loadFromDB(mysqli $conn, $id)
+    {
+        $sql = 'SELECT FORM Users WHERE id=' . $id;
         $result = $conn->query($sql);
 
-        if($result != false){
-            foreach ($result as $row){
+        if ($result != false) {
+            foreach ($result as $row) {
                 $this->id = $row['id'];
                 $this->name = $row['name'];
                 $this->surname = $row['surname'];
@@ -72,7 +72,8 @@ class User
         return false;
     }
 
-    public function saveToDB(mysqli $conn){
+    public function saveToDB(mysqli $conn)
+    {
         if ($this->id === -1) {
             $sql = "INSERT INTO Users(name, surname, email, hassed_pass, addres, is_active) VALUES 
                     ('{$this->name}','{$this->surname}','{$this->email}','{$this->hassedPass}','{$this->addres}','{$this->isActive}')";
@@ -189,9 +190,12 @@ class User
     {
         $this->email = $email;
     }
-    public function activate(){
+
+    public function activate()
+    {
         $this->isActive = 1;
     }
+
 
     /**
      * @param string $surname
@@ -200,5 +204,5 @@ class User
     {
         $this->surname = $surname;
     }
-    
+
 }
