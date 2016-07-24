@@ -1,0 +1,1 @@
+ALTER TABLE Items ADD FOREIGN KEY(id) REFERENCES Items_photos(id_group)
