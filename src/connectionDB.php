@@ -1,11 +1,14 @@
 <?php
 
 session_start();
-require_once __DIR__."/User.php";
+
+spl_autoload_register(function ($className){
+   include 'src/'.$className.'.php';
+});
 
 $db_host = "localhost";
 $db_user = "root";
-$db_password = "root";
+$db_password = "268722qw";
 $db_name = "Shop";
 
 $conn = new mysqli($db_host,$db_user,$db_password,$db_name);

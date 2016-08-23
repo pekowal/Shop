@@ -1,30 +1,46 @@
 <?php
-
 require_once './src/connectionDB.php';
 
+/*
+if(isset($_SESSION['loggedUserId'])){
+    header("Location:index.php");
+}
+*/
+var_dump($_SESSION);
 
-if (isset($_SESSION['loggedUserId'])) {
-    $loggedUserid = $_SESSION['loggedUserId'];
 
-    $loggedUser = new User();
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    var_dump($_POST);
+    $emailUser = $_POST['email'];
+    $passUser = $_POST['password1'];
 
-    $loggedUser->loadFromDB($conn, $loggedUserid);
+
+    if (strlen($_POST['email']) > 2) {
+        $loggedUser = User::LogIn($conn, $emailUser, $passUser);
+
+        if ($loggedUser != null) {
+            $_SESSION['loggedUserId'] = $loggedUser->getId();
+            header("Location:index.php");
+        } else {
+            echo "Nie udało się zalogować";
+        }
+
+    } else {
+        echo "Wypełnij poprawnie formularz";
+    }
 
 }
-
-
 ?>
 
 
 <!DOCTYPE html>
-<html lang="en" xmlns="http://www.w3.org/1999/html">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Shop</title>
-    <!--
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-          -->
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+          crossorigin="anonymous">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
             integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
@@ -43,17 +59,13 @@ if (isset($_SESSION['loggedUserId'])) {
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <ul class="nav navbar-nav">
-                <li class="active">
-                    <a class="navbar-brand" href="index.php">Shop</a>
-                </li>
-            </ul>
+            <a class="navbar-brand" href="index.php">Shop</a>
         </div>
 
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
-                <li class=""><a href="#">Link <span class="sr-only">(current)</span></a></li>
+                <li class="active"><a href="#">Link <span class="sr-only">(current)</span></a></li>
                 <li><a href="#">Link</a></li>
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
@@ -97,8 +109,38 @@ if (isset($_SESSION['loggedUserId'])) {
     </div><!-- /.container-fluid -->
 </nav>
 
+<section>
+    <div class="container">
+        <form class="form-horizontal" action="#" method="post">
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Email</label>
+                <div class="col-sm-10">
+                    <input class="form-control" type="email" name="email" pattern="^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-
+                            ]+(\.[a-zA-Z0-9-]{1,})*\.([a-zA-Z]{2,}){1}$" placeholder="Podaj email"><br>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Hasło</label>
+                <div class="col-sm-10">
+                    <input class="form-control" type="password" name="password1" placeholder="Podaj hasło"><br>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <button type="submit" class="btn btn-default">Zaloguj</button>
+                </div>
+            </div>
+
+        </form>
+    </div>
+
+</section>
+
 </body>
 </html>
+
 
 <?php
 
@@ -106,3 +148,4 @@ $conn->close();
 $conn = null;
 
 ?>
+

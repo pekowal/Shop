@@ -39,6 +39,31 @@ class User
         return $toReturn;
     }
 
+    public static function LogIn(mysqli $conn, $email, $pass){
+        $sql = "SELECT * FROM Users WHERE email= '{$email}'";
+
+        $result = $conn->query($sql);
+        if($result != false){
+            foreach ($result as $row){
+                $loggedUser = new User();
+                $loggedUser->id = $row['id'];
+                $loggedUser->name = $row['name'];
+                $loggedUser->surname = $row['surname'];
+                $loggedUser->email = $row['email'];
+                $loggedUser->addres = $row['address'];
+                $loggedUser->hassedPass = $row['hassed_pass'];
+                $loggedUser->creationDate = $row['register_date'];
+                var_dump($loggedUser);
+
+                if($loggedUser->verifyPassword($pass)){
+                    return $loggedUser;
+                }
+            }
+
+        }
+        return false;
+    }
+
 
     public function __construct()
     {
@@ -54,8 +79,11 @@ class User
 
     public function loadFromDB(mysqli $conn, $id)
     {
-        $sql = 'SELECT FORM Users WHERE id=' . $id;
+        $sql = "SELECT * FROM Users WHERE id='{$id}'";
+
+
         $result = $conn->query($sql);
+
 
         if ($result != false) {
             foreach ($result as $row) {
@@ -63,7 +91,7 @@ class User
                 $this->name = $row['name'];
                 $this->surname = $row['surname'];
                 $this->email = $row['email'];
-                $this->addres = $row['hassed_pass'];
+                $this->hassedPass = $row['hassed_pass'];
                 $this->addres = $row['address'];
                 $this->creationDate = $row['register_date'];
                 return true;
@@ -75,7 +103,7 @@ class User
     public function saveToDB(mysqli $conn)
     {
         if ($this->id === -1) {
-            $sql = "INSERT INTO Users(name, surname, email, hassed_pass, addres, is_active) VALUES 
+            $sql = "INSERT INTO Users(name, surname, email, hassed_pass, address, is_active) VALUES 
                     ('{$this->name}','{$this->surname}','{$this->email}','{$this->hassedPass}','{$this->addres}','{$this->isActive}')";
             $result = $conn->query($sql);
             if ($result === true) {
@@ -87,10 +115,11 @@ class User
             $sql = "UPDATE Users SET name='{$this->name}',
                                       surname='{$this->surname}',
                                       email='{$this->email}',
-                                      hassed_pass='$this->$this->hassedPass',
-                                      addres='$this->addres',
-                                      is_active='$this->isActive' WHERE id='{$this->id}'";
+                                      hassed_pass='{$this->hassedPass}',
+                                      address='{$this->addres}',
+                                      is_active='{$this->isActive}' WHERE id='{$this->id}'";
             $result = $conn->query($sql);
+            var_dump($conn->error);
             return $result;
             //update row to database
         }
@@ -107,7 +136,7 @@ class User
             return false;
         }
         $hassedPassword = password_hash($newPassword1, PASSWORD_BCRYPT);
-        $this->hassedPassword = $hassedPassword;
+        $this->hassedPass = $hassedPassword;
         return true;
     }
 
