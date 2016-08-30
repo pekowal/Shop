@@ -16,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $userToRegister->setName($_POST['name']);
         $userToRegister->setSurname($_POST['surname']);
         $userToRegister->setEmail($_POST['email']);
-        $userToRegister->setAddres($_POST['address']);
+        $userToRegister->setAddress($_POST['address']);
         $userToRegister->activate();
         $goodPassword = $userToRegister->setPassword($_POST['password1'], $_POST['password2']);
         var_dump($userToRegister);
@@ -45,9 +45,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <head>
         <meta charset="UTF-8">
         <title>Shop</title>
-        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"
-              integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
-              crossorigin="anonymous">
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
                 integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
@@ -100,6 +99,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                        aria-expanded=\"false\">{$loggedUser->getEmail()}<span class=\"caret\"></span></a>";
                             echo "<ul class=\"dropdown-menu\">";
                             echo "<li><a href='editUser.php'>Edytuj profil</a></li>";
+                            echo "<li><a href='order.php'>Zamówienia</a></li>";
                             echo "<li><a href='logout.php'>Wyloguj</a></li>";
                             echo "</ul>";
                         } else {

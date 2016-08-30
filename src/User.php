@@ -14,7 +14,7 @@ class User
     private $surname;
     private $email;
     private $hassedPass;
-    private $addres;
+    private $address;
     private $creationDate;
     private $isActive;
 
@@ -30,8 +30,8 @@ class User
                 $newUser->name = $row['name'];
                 $newUser->surname = $row['surname'];
                 $newUser->email = $row['email'];
-                $newUser->addres = $row['address'];
-                $newUser->addres = $row['hassed_pass'];
+                $newUser->address = $row['address'];
+                $newUser->hassedPass = $row['hassed_pass'];
                 $newUser->creationDate = $row['register_date'];
                 $toReturn[] = $newUser;
             }
@@ -50,10 +50,9 @@ class User
                 $loggedUser->name = $row['name'];
                 $loggedUser->surname = $row['surname'];
                 $loggedUser->email = $row['email'];
-                $loggedUser->addres = $row['address'];
+                $loggedUser->address = $row['address'];
                 $loggedUser->hassedPass = $row['hassed_pass'];
                 $loggedUser->creationDate = $row['register_date'];
-                var_dump($loggedUser);
 
                 if($loggedUser->verifyPassword($pass)){
                     return $loggedUser;
@@ -72,7 +71,7 @@ class User
         $this->surname = '';
         $this->email = '';
         $this->hassedPass = '';
-        $this->addres = '';
+        $this->address = '';
         $this->creationDate = '';
         $this->isActive = 1;
     }
@@ -92,7 +91,7 @@ class User
                 $this->surname = $row['surname'];
                 $this->email = $row['email'];
                 $this->hassedPass = $row['hassed_pass'];
-                $this->addres = $row['address'];
+                $this->address = $row['address'];
                 $this->creationDate = $row['register_date'];
                 return true;
             }
@@ -104,7 +103,7 @@ class User
     {
         if ($this->id === -1) {
             $sql = "INSERT INTO Users(name, surname, email, hassed_pass, address, is_active) VALUES 
-                    ('{$this->name}','{$this->surname}','{$this->email}','{$this->hassedPass}','{$this->addres}','{$this->isActive}')";
+                    ('{$this->name}','{$this->surname}','{$this->email}','{$this->hassedPass}','{$this->address}','{$this->isActive}')";
             $result = $conn->query($sql);
             if ($result === true) {
                 $this->id = $conn->insert_id;
@@ -116,13 +115,20 @@ class User
                                       surname='{$this->surname}',
                                       email='{$this->email}',
                                       hassed_pass='{$this->hassedPass}',
-                                      address='{$this->addres}',
+                                      address='{$this->address}',
                                       is_active='{$this->isActive}' WHERE id='{$this->id}'";
             $result = $conn->query($sql);
             var_dump($conn->error);
             return $result;
             //update row to database
         }
+    }
+    
+    public function deleteFromDB(mysqli $conn){
+        $sql = "DELETE FROM Users WHERE id=".$this->id;
+        $result = $conn->query($sql);
+        
+        return $result;
     }
 
     public function verifyPassword($password)
@@ -143,9 +149,9 @@ class User
     /**
      * @return string
      */
-    public function getAddres()
+    public function getAddress()
     {
-        return $this->addres;
+        return $this->address;
     }
 
     /**
@@ -181,11 +187,11 @@ class User
     }
 
     /**
-     * @param string $addres
+     * @param string $address
      */
-    public function setAddres($addres)
+    public function setAddress($address)
     {
-        $this->addres = $addres;
+        $this->address = $address;
     }
 
     /**
@@ -225,7 +231,9 @@ class User
         $this->isActive = 1;
     }
 
-
+    public function deactivate(){
+        $this->isActive = 0;
+    }
     /**
      * @param string $surname
      */

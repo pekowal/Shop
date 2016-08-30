@@ -19,7 +19,7 @@ if(!empty($_POST)){
         $loggedUser->setName($_POST['name']);
         $loggedUser->setSurname($_POST['surname']);
         $loggedUser->setEmail($_POST['email']);
-        $loggedUser->setAddres($_POST['address']);
+        $loggedUser->setAddress($_POST['address']);
         $loggedUser->setPassword($_POST['newPass1'],$_POST['newPass2']);
         $loggedUser->saveToDB($conn);        
     }else{
@@ -79,7 +79,7 @@ if(!empty($_POST)){
                         $groups = ItemGroup::GetAllGroups($conn);
                         //var_dump($groups);
                         for ($i = 0; $i < count($groups); $i++) {
-                            echo "<li><a href=g" . $groups[$i]->getId() . ">" . $groups[$i]->getName() . "</a></li>";
+                            echo "<li><a href='item.php?gid=" . $groups[$i]->getId() . "'>" . $groups[$i]->getName() . "</a></li>";
                         }
                         ?>
                     </ul>
@@ -104,10 +104,11 @@ if(!empty($_POST)){
                     }
                     ?>
                 </li>
-
-                <li>
-                    <a href="register.php">Rejestracja</a>
-                </li>
+                <?php if (!isset($_SESSION['loggedUserId'])) {
+                    echo "<li>
+                             <a href = 'register.php' > Rejestracja</a >
+                          </li>";
+                }?>
             </ul>
         </div><!-- /.navbar-collapse -->
     </div><!-- /.container-fluid -->
@@ -138,7 +139,7 @@ if(!empty($_POST)){
             <div class="form-group">
                 <label class="col-sm-2 control-label">Adres</label>
                 <div class="col-sm-10">
-                    <input class="form-control" value="<?php echo $loggedUser->getAddres()?>" type="text" name="address" placeholder="Podaj pełny adres"><br>
+                    <input class="form-control" value="<?php echo $loggedUser->getAddress()?>" type="text" name="address" placeholder="Podaj pełny adres"><br>
                 </div>
             </div>
             <div class="form-group">

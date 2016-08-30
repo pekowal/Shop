@@ -15,6 +15,27 @@ class Admin
     private $email;
     private $hassedPass;
 
+    public static function LogIn(mysqli $conn, $email, $pass){
+        $sql = "SELECT * FROM Admins WHERE email= '{$email}'";
+
+        $result = $conn->query($sql);
+        var_dump($result);
+        if($result != false){
+            foreach ($result as $row){
+                $loggedAdmin = new Admin();
+                $loggedAdmin->id = $row['id'];
+                $loggedAdmin->email = $row['email'];
+                $loggedAdmin->hassedPass = $row['hassed_pass'];
+
+                if($loggedAdmin->passwordVerify($pass)){
+                    return $loggedAdmin;
+                }
+            }
+
+        }
+        return false;
+    }
+
     public function __construct()
     {
         $this->id = -1;
@@ -113,12 +134,3 @@ class Admin
     }
 
 }
-
-$admin = new Admin();
-
-$admin->setPassword(123,123);
-$admin->setEmail('pekowal@gmail.com');
-var_dump($admin->saveToDB($conn));
-var_dump($conn);
-
-var_dump($admin);
