@@ -13,21 +13,24 @@ if (isset($_SESSION['loggedUserId'])) {
 }
 
 
-if(!empty($_POST)){
+if (!empty($_POST)) {
 
-    if($loggedUser->verifyPassword($_POST['oldPass'])){
-        $loggedUser->setName($_POST['name']);
-        $loggedUser->setSurname($_POST['surname']);
-        $loggedUser->setEmail($_POST['email']);
-        $loggedUser->setAddress($_POST['address']);
-        $loggedUser->setPassword($_POST['newPass1'],$_POST['newPass2']);
-        $loggedUser->saveToDB($conn);        
-    }else{
-        echo 'Podałeś złe hasło';
+    $loggedUser->setName($_POST['name']);
+    $loggedUser->setSurname($_POST['surname']);
+    $loggedUser->setEmail($_POST['email']);
+    $loggedUser->setAddress($_POST['address']);
+
+    if (isset($_POST['oldPass'])) {
+        if (!$loggedUser->verifyPassword($_POST['oldPass'])) {
+            echo 'złe stare hasło';
+        } elseif (!empty($_POST['newPass1'])) {
+            if (!$loggedUser->setPassword($_POST['newPass1'], $_POST['newPass2'])) {
+                echo 'nowe hasła nie są takie same';
+            }
+        }
     }
-    
+    $loggedUser->saveToDB($conn);
 
-        
 }
 
 
@@ -79,7 +82,7 @@ if(!empty($_POST)){
                         $groups = ItemGroup::GetAllGroups($conn);
                         //var_dump($groups);
                         for ($i = 0; $i < count($groups); $i++) {
-                            echo "<li><a href='item.php?gid=" . $groups[$i]->getId() . "'>" . $groups[$i]->getName() . "</a></li>";
+                            echo "<li><a href='group.php?id=" . $groups[$i]->getId() . "'>" . $groups[$i]->getName() . "</a></li>";
                         }
                         ?>
                     </ul>
@@ -108,7 +111,7 @@ if(!empty($_POST)){
                     echo "<li>
                              <a href = 'register.php' > Rejestracja</a >
                           </li>";
-                }?>
+                } ?>
             </ul>
         </div><!-- /.navbar-collapse -->
     </div><!-- /.container-fluid -->
@@ -120,26 +123,30 @@ if(!empty($_POST)){
             <div class="form-group">
                 <label class="col-sm-2 control-label">Imię</label>
                 <div class="col-sm-10">
-                    <input class="form-control" value="<?php echo $loggedUser->getName()?>" type="text" name="name" placeholder="Podaj imię"><br>
+                    <input class="form-control" value="<?php echo $loggedUser->getName() ?>" type="text" name="name"
+                           placeholder="Podaj imię"><br>
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-sm-2 control-label">Nazwiska</label>
                 <div class="col-sm-10">
-                    <input class="form-control" value="<?php echo $loggedUser->getSurname()?>" type="text" name="surname" placeholder="Podaj nazwisko"><br>
+                    <input class="form-control" value="<?php echo $loggedUser->getSurname() ?>" type="text"
+                           name="surname" placeholder="Podaj nazwisko"><br>
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-sm-2 control-label">Email</label>
                 <div class="col-sm-10">
-                    <input class="form-control" value="<?php echo $loggedUser->getEmail()?>" type="email" name="email" pattern="^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-
+                    <input class="form-control" value="<?php echo $loggedUser->getEmail() ?>" type="email" name="email"
+                           pattern="^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-
                             ]+(\.[a-zA-Z0-9-]{1,})*\.([a-zA-Z]{2,}){1}$" placeholder="Podaj email"><br>
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-sm-2 control-label">Adres</label>
                 <div class="col-sm-10">
-                    <input class="form-control" value="<?php echo $loggedUser->getAddress()?>" type="text" name="address" placeholder="Podaj pełny adres"><br>
+                    <input class="form-control" value="<?php echo $loggedUser->getAddress() ?>" type="text"
+                           name="address" placeholder="Podaj pełny adres"><br>
                 </div>
             </div>
             <div class="form-group">

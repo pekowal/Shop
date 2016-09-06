@@ -119,7 +119,7 @@ class Item
             return false;
         } else {
             $sql = "UPDATE Items SET id_group='{$this->idGroup}', name='{$this->name}',
-                    description='{$this->desc}', price='{$this->price}', quantity='{$this->quantity}' WHERE id=$this->id";
+                    description='{$this->desc}', price='{$this->price}', quantity='{$this->quantity}' WHERE id=".$this->id;
 
             $result = $conn->query($sql);
 

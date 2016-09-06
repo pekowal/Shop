@@ -46,6 +46,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <meta charset="UTF-8">
         <title>Shop</title>
         <link href="css/bootstrap.min.css" rel="stylesheet">
+        <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css" rel="stylesheet">
+
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
@@ -111,6 +113,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <li class="active">
                         <a href="register.php">Rejestracja</a>
                     </li>
+                    <li><a href="cart.php"><span class="glyphicon glyphicon-shopping-cart"></span></a></li>
+
                 </ul>
             </div><!-- /.navbar-collapse -->
         </div><!-- /.container-fluid -->

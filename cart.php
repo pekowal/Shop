@@ -4,35 +4,50 @@ require_once './src/connectionDB.php';
 
 
 if (isset($_SESSION['loggedUserId'])) {
-    $loggedUserid = $_SESSION['loggedUserId'];
+    $loggedUserId = $_SESSION['loggedUserId'];
 
     $loggedUser = new User();
 
-    $loggedUser->loadFromDB($conn, $loggedUserid);
+    $loggedUser->loadFromDB($conn, $loggedUserId);
+
+}
+if (isset($_GET['idToDelete'])){
+
+    for ($i = 0; $i < count($_SESSION['cart']); $i++){
+        if($_SESSION['cart'][$i]['id'] == $_GET['idToDelete']){
+            unset($_SESSION['cart'][$i]);
+        }
+    }
+
+//unset($_SESSION['cart']
+}
+var_dump($_SESSION);
+
+$items = [];
+$maxQuantities = [];
+foreach ($_SESSION['cart'] as $item) {
+    /*
+    $key = array_search($_GET['idToDelete'], $item);
+    var_dump($key);
+    */
+
+    $newItem = new Item();
+    $newItem->loadFromDB($conn, $item['id']);
+
+    $maxQuantities[] = $newItem->getQuantity();
+    $newItem->setQuantity($item['quantity']);
+    if(!empty($_POST)){
+        if ($newItem->getId() == $_POST['itemId']){
+            $newItem->setQuantity($_POST['changeQuantity']);
+        }
+    }
+
+    $items[] = $newItem;
 
 }
 
-if (isset($_GET['gid'])) {
-    $allItemsOfGroup = Item::GetAllProductsOfGroup($conn, $_GET['gid']);
 
-    var_dump($allItemsOfGroup);
-}
 
-if (isset($_GET['id'])) {
-    $itemToShow = new Item();
-    $itemToShow->loadFromDB($conn, $_GET['id']);
-    $itemPhotos = new ItemPhoto();
-    $itemPhotos = $itemPhotos->loadAllPhotosOfItemFromDB($conn, $_GET['id']);
-
-}
-
-if (!empty($_POST)) {
-    $_SESSION['cart'][] = array('id' => $itemToShow->getId(),
-        'quantity' => $_POST['quantity']);
-    var_dump($_SESSION);
-
-   // unset($_SESSION['cart']);
-}
 
 ?>
 
@@ -73,13 +88,14 @@ if (!empty($_POST)) {
             </ul>
         </div>
 
+        <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
                 <li class=""><a href="#">Link <span class="sr-only">(current)</span></a></li>
                 <li><a href="#">Link</a></li>
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-                       aria-expanded="false">Kategorie <span class="caret"></span></a>
+                       aria-expanded="false">Kategorie<span class="caret"></span></a>
                     <ul class="dropdown-menu">
                         <?php
                         $groups = ItemGroup::GetAllGroups($conn);
@@ -116,72 +132,44 @@ if (!empty($_POST)) {
                           </li>";
                 } ?>
                 <li><a href="cart.php"><span class="glyphicon glyphicon-shopping-cart"></span></a></li>
+
             </ul>
-        </div>
-    </div>
+        </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
 </nav>
-<?php
-if(!empty($_POST)){
-    echo "<div class=\"alert alert-success\">
-             <strong>OK.</strong> Pomyślnie dodano produkt do koszyka.
-          </div>";
-}
-?>
 <section>
     <div class="container">
         <div class="row">
-            <div class='col-lg-4 text-center'>
-
+            <table class="table table-striped table-bordered table-hover">
+                <thead>
+                <tr>
+                    <th>Przedmiot:</th>
+                    <th>Cena:</th>
+                    <th>Ilość:</th>
+                    <th>Edycja:</th>
+                </tr>
+                </thead>
+                <tbody>
                 <?php
+                    foreach ($items as $item){
+                        $key = array_search($item,$items);
 
-                foreach ($itemPhotos as $itemPhoto) {
-                    echo "<div class='product'>
-                              <img class='img img-responsive' src='{$itemPhoto->getSrc()}' width='300' height='300'>
-                          </div>";
-                }
+                            echo "<tr>";
+                            echo "<th>{$item->getName()}</th>";
+                            echo "<th>{$item->getPrice()}</th>";
+                            echo "<th><form method='post'>
+                                    <input type='hidden' name='itemId' value='{$item->getId()}'>
+                                    <input name='changeQuantity' type='number' max='{$maxQuantities[$key]}' min='1' value='{$item->getQuantity()}'></th>";
+                            echo "<th><button class='btn btn-default' type='submit'>Zmień</button></form><a href='cart.php?idToDelete={$item->getId()}'><button class='btn btn-danger'>Usuń</button></a></th>";
+
+
+                    }
+
                 ?>
-
-
-                <span style="font-size: 2em" class="left glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
-                <span style="font-size: 2em" class="right glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
-
-            </div>
-
-
-            <div class="col-lg-4 text-center well itemDesc">
-                <h2><?php echo $itemToShow->getName() ?></h2><br><br>
-                <h3>Opis:</h3>
-                <p>
-                    <?php echo $itemToShow->getDesc() ?>
-                </p>
-            </div>
-            <div class="col-lg-4">
-                <br>
-                <br>
-                <br>
-                <form action="item.php?id=<?php echo $itemToShow->getId() ?>" class="form-horizontal" method="post">
-                    <div class="form-group">
-                        <label class="col-sm-3 control-label">Cena:</label>
-                        <div class="col-sm-9">
-                            <p class="form-control-static"><?php echo $itemToShow->getPrice() ?></p>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-sm-3 control-label">Ilość:</label>
-                        <div class="col-sm-9">
-                            <input type="number" name="quantity" value="1" min="1"
-                                   max="<?php echo $itemToShow->getQuantity() ?>" class="form-control" id="inputCount">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <div class="col-sm-12">
-                            <input class="form-control" type="submit" value="Dodaj do koszyka">
-                        </div>
-                    </div>
-                </form>
-
-            </div>
+                </tbody>
+            </table>
         </div>
+    </div>
 
 </section>
 

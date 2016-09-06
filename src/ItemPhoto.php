@@ -11,6 +11,21 @@ class ItemPhoto
     private $id;
     private $idItem;
     private $src;
+
+    public static function LoadOnePhotoOfItemFromDB(mysqli $conn, $idItem){
+        $sql = "SELECT * FROM Items_photos WHERE id_item=".$idItem;
+        $result = $conn->query($sql);
+        if($result->num_rows == 1){
+            foreach($result as $row){
+                $photo = new ItemPhoto();
+                $photo->id = $row['id'];
+                $photo->idItem = $row['id_item'];
+                $photo->src = $row['src'];
+            }
+            return $photo;
+        }
+        return false;
+    }
     
 
     public function __construct()
@@ -46,20 +61,7 @@ class ItemPhoto
         return false;
     }
 
-    public function loadOnePhotoOfItemFromDB(mysqli $conn, $idItem){
-        $sql = "SELECT * FROM Items_photos WHERE id_item=".$idItem;
-        $result = $conn->query($sql);
-        if($result->num_rows == 1){
-            foreach($result as $row){
-                $photo = new ItemPhoto();
-                $photo->id = $row['id'];
-                $photo->idItem = $row['id_item'];
-                $photo->src = $row['src'];
-            }
-            return $photo;
-        }
-        return false;
-    }
+
 
     public function loadAllPhotosOfItemFromDB(mysqli $conn, $idItem){
         $toReturn = [];
@@ -77,12 +79,23 @@ class ItemPhoto
         }
         return false;
     }
+    public function clearDirectory(){
+        if(is_file($this->src)){
+            $fp = fopen($this->src,'r');
+            $fileinfo = fstat($fp);
+            unlink($this->src);
+            return true;
+        }
+        return false;
+    }
 
     public function deleteFromDB(mysqli $conn)
     {
         $sql = "DELETE FROM Items_photos WHERE id=" . $this->id;
         $result = $conn->query($sql);
 
+        $this->clearDirectory();
+        
         return $result;
 
     }

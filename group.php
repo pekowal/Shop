@@ -4,35 +4,21 @@ require_once './src/connectionDB.php';
 
 
 if (isset($_SESSION['loggedUserId'])) {
-    $loggedUserid = $_SESSION['loggedUserId'];
+    $loggedUserId = $_SESSION['loggedUserId'];
 
     $loggedUser = new User();
 
-    $loggedUser->loadFromDB($conn, $loggedUserid);
+    $loggedUser->loadFromDB($conn, $loggedUserId);
 
-}
-
-if (isset($_GET['gid'])) {
-    $allItemsOfGroup = Item::GetAllProductsOfGroup($conn, $_GET['gid']);
-
-    var_dump($allItemsOfGroup);
 }
 
 if (isset($_GET['id'])) {
-    $itemToShow = new Item();
-    $itemToShow->loadFromDB($conn, $_GET['id']);
-    $itemPhotos = new ItemPhoto();
-    $itemPhotos = $itemPhotos->loadAllPhotosOfItemFromDB($conn, $_GET['id']);
+    $group = new ItemGroup();
+    $group->loadFromDB($conn, $_GET['id']);
+    $allItemsOfGroup = Item::GetAllProductsOfGroup($conn, $_GET['id']);
 
 }
 
-if (!empty($_POST)) {
-    $_SESSION['cart'][] = array('id' => $itemToShow->getId(),
-        'quantity' => $_POST['quantity']);
-    var_dump($_SESSION);
-
-   // unset($_SESSION['cart']);
-}
 
 ?>
 
@@ -73,13 +59,14 @@ if (!empty($_POST)) {
             </ul>
         </div>
 
+        <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
                 <li class=""><a href="#">Link <span class="sr-only">(current)</span></a></li>
                 <li><a href="#">Link</a></li>
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-                       aria-expanded="false">Kategorie <span class="caret"></span></a>
+                       aria-expanded="false"><?php echo $group->getName()?><span class="caret"></span></a>
                     <ul class="dropdown-menu">
                         <?php
                         $groups = ItemGroup::GetAllGroups($conn);
@@ -116,72 +103,30 @@ if (!empty($_POST)) {
                           </li>";
                 } ?>
                 <li><a href="cart.php"><span class="glyphicon glyphicon-shopping-cart"></span></a></li>
+
             </ul>
-        </div>
-    </div>
+        </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
 </nav>
-<?php
-if(!empty($_POST)){
-    echo "<div class=\"alert alert-success\">
-             <strong>OK.</strong> Pomyślnie dodano produkt do koszyka.
-          </div>";
-}
-?>
 <section>
     <div class="container">
-        <div class="row">
-            <div class='col-lg-4 text-center'>
 
-                <?php
-
-                foreach ($itemPhotos as $itemPhoto) {
-                    echo "<div class='product'>
-                              <img class='img img-responsive' src='{$itemPhoto->getSrc()}' width='300' height='300'>
-                          </div>";
+            <?php
+            if (isset($_GET['id'])){
+                foreach ($allItemsOfGroup as $item){
+                    $photo = ItemPhoto::LoadOnePhotoOfItemFromDB($conn, $item->getId());
+                    echo "<div class=\"row\">";
+                    echo "<div class='col-lg-4'><div class='group-product'><img class='img img-responsive' src='{$photo->getSrc()}'></div></div>";
+                    echo "<div class='col-lg-4'>{$item->getName()}</div>";
+                    echo "<div class='col-lg-2 right'><span>Cena: </span>{$item->getPrice()}</div>";
+                    echo "<div class='col-lg-2 right'><a href='item.php?id={$item->getId()}'><button class='btn btn-default'>Pokaż</button></a></div><br>";
+                    echo "</div>";
                 }
-                ?>
 
-
-                <span style="font-size: 2em" class="left glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
-                <span style="font-size: 2em" class="right glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
-
-            </div>
-
-
-            <div class="col-lg-4 text-center well itemDesc">
-                <h2><?php echo $itemToShow->getName() ?></h2><br><br>
-                <h3>Opis:</h3>
-                <p>
-                    <?php echo $itemToShow->getDesc() ?>
-                </p>
-            </div>
-            <div class="col-lg-4">
-                <br>
-                <br>
-                <br>
-                <form action="item.php?id=<?php echo $itemToShow->getId() ?>" class="form-horizontal" method="post">
-                    <div class="form-group">
-                        <label class="col-sm-3 control-label">Cena:</label>
-                        <div class="col-sm-9">
-                            <p class="form-control-static"><?php echo $itemToShow->getPrice() ?></p>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-sm-3 control-label">Ilość:</label>
-                        <div class="col-sm-9">
-                            <input type="number" name="quantity" value="1" min="1"
-                                   max="<?php echo $itemToShow->getQuantity() ?>" class="form-control" id="inputCount">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <div class="col-sm-12">
-                            <input class="form-control" type="submit" value="Dodaj do koszyka">
-                        </div>
-                    </div>
-                </form>
-
-            </div>
+            }
+            ?>
         </div>
+    </div>
 
 </section>
 

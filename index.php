@@ -14,12 +14,13 @@ if (isset($_SESSION['loggedUserId'])) {
 
 $fourRandomItems = Item::GetFourRandomProducts($conn);
 
-var_dump($fourRandomItems);
 
 $photo1 = new ItemPhoto();
 $photo1 = $photo1->loadOnePhotoOfItemFromDB($conn, $fourRandomItems[0]->getId());
+$photo2 = $photo1->loadOnePhotoOfItemFromDB($conn, $fourRandomItems[1]->getId());
+$photo3 = $photo1->loadOnePhotoOfItemFromDB($conn, $fourRandomItems[2]->getId());
+$photo4 = $photo1->loadOnePhotoOfItemFromDB($conn, $fourRandomItems[3]->getId());
 
-var_dump($photo1);
 
 ?>
 
@@ -31,8 +32,12 @@ var_dump($photo1);
     <title>Shop</title>
 
     <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/custom.css" rel="stylesheet">
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css" rel="stylesheet">
+
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <script src="js/app.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
             integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
             crossorigin="anonymous"></script>
@@ -41,7 +46,6 @@ var_dump($photo1);
 <body>
 <nav class="navbar navbar-default">
     <div class="container-fluid">
-        <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header">
             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
                     data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
@@ -56,8 +60,7 @@ var_dump($photo1);
                 </li>
             </ul>
         </div>
-
-        <!-- Collect the nav links, forms, and other content for toggling -->
+        
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
                 <li class=""><a href="#">Link <span class="sr-only">(current)</span></a></li>
@@ -70,7 +73,7 @@ var_dump($photo1);
                         $groups = ItemGroup::GetAllGroups($conn);
                         //var_dump($groups);
                         for ($i = 0; $i < count($groups); $i++) {
-                            echo "<li><a href='item.php?gid=" . $groups[$i]->getId() . "'>" . $groups[$i]->getName() . "</a></li>";
+                            echo "<li><a href='group.php?id=" . $groups[$i]->getId() . "'>" . $groups[$i]->getName() . "</a></li>";
                         }
                         ?>
                     </ul>
@@ -101,13 +104,14 @@ var_dump($photo1);
                              <a href = 'register.php' > Rejestracja</a >
                           </li>";
                 } ?>
+                <li><a href="cart.php"><span class="glyphicon glyphicon-shopping-cart"></span></a></li>
             </ul>
-        </div><!-- /.navbar-collapse -->
-    </div><!-- /.container-fluid -->
+        </div>
+    </div>
 </nav>
 <?php
 
-if(empty($_SESSION['loggedUserId'])){
+if (empty($_SESSION['loggedUserId'])) {
 
 
     echo "<div class=\"container\">
@@ -120,45 +124,45 @@ if(empty($_SESSION['loggedUserId'])){
 }
 
 
-
 ?>
 <section>
-    <div id="myCarousel" class="carousel slide" data-ride="carousel">
-        <!-- Indicators -->
-        <ol class="carousel-indicators">
-            <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
-            <li data-target="#myCarousel" data-slide-to="1"></li>
-            <li data-target="#myCarousel" data-slide-to="2"></li>
-            <li data-target="#myCarousel" data-slide-to="3"></li>
-        </ol>
 
-        <!-- Wrapper for slides -->
-        <div class="carousel-inner" role="listbox">
-            <div class="item active">
-                <img src="img_chania.jpg" alt="Chania">
-            </div>
-
-            <div class="item">
-                <img src="img_chania2.jpg" alt="Chania">
-            </div>
-
-            <div class="item">
-                <img src="img_flower.jpg" alt="Flower">
-            </div>
-
-            <div class="item">
-                <img src="img_flower2.jpg" alt="Flower">
-            </div>
+    <div class="text-center carousel main-carusel" role="listbox">
+        <div class="product">
+            <a href="item.php?id=<?php echo $fourRandomItems[0]->getId() ?>">
+                <img class="img img-responsive" src="<?php echo $photo1->getSrc() ?>" width="300" height="300">
+                <span><?php echo $fourRandomItems[0]->getName() ?></span>
+            </a>
+        </div>
+        <div class="product">
+            <a href="item.php?id=<?php echo $fourRandomItems[1]->getId() ?>">
+                <img class="img img-responsive" src="<?php echo $photo2->getSrc() ?>" width="300" height="300">
+                <span><?php echo $fourRandomItems[1]->getName() ?></span>
+            </a>
         </div>
 
-        <!-- Left and right controls -->
-        <a class="left carousel-control" href="#myCarousel" role="button" data-slide="prev">
+        <div class="product">
+            <a href="item.php?id=<?php echo $fourRandomItems[2]->getId() ?>">
+                <img class="img img-responsive" src="<?php echo $photo3->getSrc() ?>" width="300" height="300">
+                <span><?php echo $fourRandomItems[2]->getName() ?></span>
+            </a>
+        </div>
+
+        <div class="product">
+            <a href="item.php?id=<?php echo $fourRandomItems[3]->getId() ?>">
+                <img class="img img-responsive" src="<?php echo $photo4->getSrc() ?>" width="300" height="300">
+                <span><?php echo $fourRandomItems[3]->getName() ?></span>
+            </a>
+        </div>
+
+
+        <a class="left carousel-control" role="button" data-slide="prev">
             <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
             <span class="sr-only">Previous</span>
         </a>
-        <a class="right carousel-control" href="#myCarousel" role="button" data-slide="next">
+        <a class="right carousel-control" role="button" data-slide="next">
             <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
-            <span class="sr-only">Next</span>
+
         </a>
     </div>
 </section>

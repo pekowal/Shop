@@ -1,0 +1,20 @@
+.product{
+    width: 300px;
+    height: 300px;
+    margin: 0 auto;
+    position: relative;
+}
+
+.main-carusel{
+    height: 300px;
+}
+
+.itemDesc{
+    height: 330px;
+}
+
+.group-product{
+    width: 100px;
+    height: 100px;
+    margin: 0 auto;
+}

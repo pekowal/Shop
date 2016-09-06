@@ -23,7 +23,10 @@ if (isset($_SESSION['loggedUserId'])) {
     <meta charset="UTF-8">
     <title>Shop</title>
     <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css" rel="stylesheet">
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
             integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
             crossorigin="anonymous"></script>
@@ -61,8 +64,7 @@ if (isset($_SESSION['loggedUserId'])) {
                         $groups = ItemGroup::GetAllGroups($conn);
                         //var_dump($groups);
                         for ($i = 0; $i < count($groups); $i++) {
-                            echo "<li><a href='item.php?gid=" . $groups[$i]->getId() . "'>" . $groups[$i]->getName() . "</a></li>";
-                        }
+                            echo "<li><a href='group.php?id=" . $groups[$i]->getId() . "'>" . $groups[$i]->getName() . "</a></li>";                        }
                         ?>
                     </ul>
                 </li>
@@ -92,6 +94,7 @@ if (isset($_SESSION['loggedUserId'])) {
                              <a href = 'register.php' > Rejestracja</a >
                           </li>";
                 }?>
+                <li><a href="cart.php"><span class="glyphicon glyphicon-shopping-cart"></span></a></li>
             </ul>
         </div><!-- /.navbar-collapse -->
     </div><!-- /.container-fluid -->

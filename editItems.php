@@ -17,15 +17,14 @@ if (isset($_GET['id'])) {
     $idItem = $_GET['id'];
     $itemToEdit = new Item();
     $itemToEdit->loadFromDB($conn, $idItem);
-    $itemPhotos = new ItemPhoto();
-    $allPhotosOfItem = $itemPhotos->loadAllPhotosOfItemFromDB($conn, $itemToEdit->getId());
     if (isset($_GET['idPhoto'])) {
         $idPhoto = $_GET['idPhoto'];
         $photoToDelete = new ItemPhoto();
         $photoToDelete->loadFromDB($conn, $idPhoto);
         $photoToDelete->deleteFromDB($conn);
     }
-
+    $itemPhotos = new ItemPhoto();
+    $allPhotosOfItem = $itemPhotos->loadAllPhotosOfItemFromDB($conn, $itemToEdit->getId());
 }
 if (isset($_GET['idToDelete'])) {
     $deleteId = $_GET['idToDelete'];
@@ -35,7 +34,6 @@ if (isset($_GET['idToDelete'])) {
 }
 
 if (!empty($_POST)) {
-
     if ($_POST['action'] == 'saveEdit') {
 
 
@@ -47,7 +45,7 @@ if (!empty($_POST)) {
         $itemToEdit->saveToDB($conn);
     }
 
-    if ($_POST['action'] = 'saveNew') {
+    if ($_POST['action'] == 'saveNew') {
         $newItem = new Item();
         $newItem->setName($_POST['name']);
         $newItem->setDesc($_POST['desc']);
@@ -128,7 +126,6 @@ $allGroups = ItemGroup::GetAllGroups($conn);
 <body>
 <nav class="navbar navbar-default">
     <div class="container-fluid">
-        <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header">
             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
                     data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
@@ -143,8 +140,7 @@ $allGroups = ItemGroup::GetAllGroups($conn);
                 </li>
             </ul>
         </div>
-
-        <!-- Collect the nav links, forms, and other content for toggling -->
+        
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
                 <li><a href="editGroups.php">Grupy</a></li>
