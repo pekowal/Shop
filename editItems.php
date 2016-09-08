@@ -23,8 +23,7 @@ if (isset($_GET['id'])) {
         $photoToDelete->loadFromDB($conn, $idPhoto);
         $photoToDelete->deleteFromDB($conn);
     }
-    $itemPhotos = new ItemPhoto();
-    $allPhotosOfItem = $itemPhotos->loadAllPhotosOfItemFromDB($conn, $itemToEdit->getId());
+
 }
 if (isset($_GET['idToDelete'])) {
     $deleteId = $_GET['idToDelete'];
@@ -99,6 +98,11 @@ if (!empty($_FILES['userfile']['name'])) {
     }
 
 
+}
+
+if (isset($_GET['id'])){
+    $itemPhotos = new ItemPhoto();
+    $allPhotosOfItem = $itemPhotos->loadAllPhotosOfItemFromDB($conn, $itemToEdit->getId());
 }
 
 $allItems = Item::GetAllProducts($conn);

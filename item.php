@@ -186,6 +186,7 @@ if(!empty($_POST)){
 </section>
 
 </body>
+<script src="js/app.js"></script>
 </html>
 
 <?php

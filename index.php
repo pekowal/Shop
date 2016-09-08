@@ -15,11 +15,11 @@ if (isset($_SESSION['loggedUserId'])) {
 $fourRandomItems = Item::GetFourRandomProducts($conn);
 
 
-$photo1 = new ItemPhoto();
-$photo1 = $photo1->loadOnePhotoOfItemFromDB($conn, $fourRandomItems[0]->getId());
-$photo2 = $photo1->loadOnePhotoOfItemFromDB($conn, $fourRandomItems[1]->getId());
-$photo3 = $photo1->loadOnePhotoOfItemFromDB($conn, $fourRandomItems[2]->getId());
-$photo4 = $photo1->loadOnePhotoOfItemFromDB($conn, $fourRandomItems[3]->getId());
+
+$photo1 = ItemPhoto::LoadOnePhotoOfItemFromDB($conn, $fourRandomItems[0]->getId());
+$photo2 = ItemPhoto::LoadOnePhotoOfItemFromDB($conn, $fourRandomItems[1]->getId());
+$photo3 = ItemPhoto::LoadOnePhotoOfItemFromDB($conn, $fourRandomItems[2]->getId());
+$photo4 = ItemPhoto::LoadOnePhotoOfItemFromDB($conn, $fourRandomItems[3]->getId());
 
 
 ?>

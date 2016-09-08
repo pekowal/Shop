@@ -13,7 +13,7 @@ class ItemPhoto
     private $src;
 
     public static function LoadOnePhotoOfItemFromDB(mysqli $conn, $idItem){
-        $sql = "SELECT * FROM Items_photos WHERE id_item=".$idItem;
+        $sql = "SELECT * FROM Items_photos WHERE id_item=".$idItem." ORDER BY RAND() LIMIT 1";
         $result = $conn->query($sql);
         if($result->num_rows == 1){
             foreach($result as $row){

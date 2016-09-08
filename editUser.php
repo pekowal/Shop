@@ -20,7 +20,7 @@ if (!empty($_POST)) {
     $loggedUser->setEmail($_POST['email']);
     $loggedUser->setAddress($_POST['address']);
 
-    if (isset($_POST['oldPass'])) {
+    if (strlen($_POST['oldPass']) > 0) {
         if (!$loggedUser->verifyPassword($_POST['oldPass'])) {
             echo 'złe stare hasło';
         } elseif (!empty($_POST['newPass1'])) {

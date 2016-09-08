@@ -33,10 +33,10 @@ $(function () {
     setInterval(function () {
         products.eq(index).hide('fast');
         index++;
-        if(index > 3){
+        if(index >= products.length){
             index = 0;
         }
         products.eq(index).show('fast');
-    },3000);
+    },5000);
     console.log(products);
 });
