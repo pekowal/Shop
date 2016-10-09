@@ -14,6 +14,28 @@ class Order
     private $status;
     private $orderDate;
     private $paymentType;
+    private $cost;
+
+    public static function GetAllOrders(mysqli $conn){
+        $sql = "SELECT * FROM Orders ORDER BY status";
+        $result = $conn->query($sql);
+        $toReturn = [];
+        if ($result != false){
+            foreach ($result as $row){
+                $order = new Order();
+                $order->id = $row['id'];
+                $order->idUser = $row['id_user'];
+                $order->status = $row['status'];
+                $order->paymentType = $row['payment_type'];
+                $order->orderDate = $row['order_date'];
+                $order->cost = $row['cost'];
+
+                $toReturn[] = $order;
+            }
+            return $toReturn;
+        }
+        return false;
+    }
 
     public static function GetAllOrdersFromUser(mysqli $conn, $userid){
         $sql = "SELECT * FROM Orders WHERE id_user=".$userid;
@@ -27,6 +49,8 @@ class Order
                 $order->status = $row['status'];
                 $order->paymentType = $row['payment_type'];
                 $order->orderDate = $row['order_date'];
+                $order->cost = $row['cost'];
+                
                 $toReturn[] = $order;
             }
             return $toReturn;
@@ -40,6 +64,7 @@ class Order
         $this->idUser = -1;
         $this->status = 'Oczekujący';
         $this->orderDate = '';
+        $this->cost = 0;
     }
 
     public function loadFromDb(mysqli $conn, $id)
@@ -52,6 +77,8 @@ class Order
                 $this->idUser = $row['id_user'];
                 $this->status = $row['status'];
                 $this->orderDate = $row['order_date'];
+                $this->paymentType = $row['payment_type'];
+                $this->cost = $row['cost'];
                 
             }
             return true;
@@ -62,15 +89,15 @@ class Order
     {
         if ($this->id == -1) {
 
-            $sql = "INSERT INTO Orders(id_user,status,payment_type) 
-                VALUES ('{$this->idUser}','{$this->status}','{$this->paymentType}')";
+            $sql = "INSERT INTO Orders(id_user,status,payment_type,cost) 
+                VALUES ('{$this->idUser}','{$this->status}','{$this->paymentType}','{$this->cost}')";
             $result = $conn->query($sql);
             if ($result != false) {
                 $this->id = $conn->insert_id;
                 return true;
             }
         }else{
-            $sql = "UPDATE Orders SET status='{$this->status}', payment_type='{$this->paymentType}' WHERE id=".$this->id;
+            $sql = "UPDATE Orders SET status='{$this->status}', payment_type='{$this->paymentType}', cost='{$this->cost}' WHERE id=".$this->id;
             $result = $conn->query($sql);
             
             return $result;
@@ -149,6 +176,22 @@ class Order
     public function getPaymentType()
     {
         return $this->paymentType;
+    }
+
+    /**
+     * @return int
+     */
+    public function getCost()
+    {
+        return $this->cost;
+    }
+
+    /**
+     * @param int $cost
+     */
+    public function setCost($cost)
+    {
+        $this->cost = $cost;
     }
 
 }

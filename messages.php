@@ -11,48 +11,11 @@ if (isset($_SESSION['loggedUserId'])) {
     $loggedUser->loadFromDB($conn, $loggedUserId);
 
 }
-if (isset($_GET['idToDelete'])) {
 
-    for ($i = 0; $i < count($_SESSION['cart']); $i++) {
-        if ($_SESSION['cart'][$i]['id'] == $_GET['idToDelete']) {
-            unset($_SESSION['cart'][$i]);
-        }
-    }
+$messages = Message::GetAllMessageForUser($conn, $loggedUserId);
 
-//unset($_SESSION['cart']
-}
+//var_dump($messages);
 
-$items = [];
-$maxQuantities = [];
-if (isset($_SESSION['cart'])) {
-
-
-    foreach ($_SESSION['cart'] as $item) {
-        $key = array_search($item, $items);
-
-        $newItem = new Item();
-        $newItem->loadFromDB($conn, $item['id']);
-
-        $maxQuantities[] = $newItem->getQuantity();
-        $newItem->setQuantity($item['quantity']);
-        if (!empty($_POST)) {
-            if ($newItem->getId() == $_POST['itemId']) {
-                $newItem->setQuantity($_POST['changeQuantity']);
-            }
-            if($item['id'] == $_POST['itemId']){
-                $_SESSION['cart'][$key]['quantity'] = $_POST['changeQuantity'];
-            }
-        }
-
-        $items[] = $newItem;
-
-    }
-
-}
-/*
-var_dump($items);
-var_dump($_SESSION);
-*/
 ?>
 
 
@@ -144,61 +107,22 @@ var_dump($_SESSION);
 </nav>
 <section>
     <div class="container">
-        <div class="row">
-            <table class="table table-striped table-bordered table-hover">
-                <thead>
-                <tr>
-                    <th>Przedmiot:</th>
-                    <th>Cena:</th>
-                    <th>Ilość:</th>
-                    <th>Edycja:</th>
-                </tr>
-                </thead>
-                <tbody>
-                <?php
-                if (isset($_SESSION['cart'])) {
 
+        <?php
 
-                    foreach ($items as $item) {
-                        $key = array_search($item, $items);
+        foreach ($messages as $message){
+            echo "<div class=\"panel panel-default\">
+                      <div class=\"panel-heading\">{$message->getSendDate()}</div>
+                      <div class=\"panel-body\">
+                        {$message->getText()}
+                      </div>
+                </div>";
+        }
 
-                        echo "<tr>";
-                        echo "<th>{$item->getName()}</th>";
-                        echo "<th>{$item->getPrice()}</th>";
-                        echo "<th><form method='post'>
-                                    <input type='hidden' name='itemId' value='{$item->getId()}'>
-                                    <input name='changeQuantity' type='number' max='{$maxQuantities[$key]}' min='1' value='{$item->getQuantity()}'></th>";
-                        echo "<th><button class='btn btn-default' type='submit'>Zmień</button></form><a href='cart.php?idToDelete={$item->getId()}'><button class='btn btn-danger'>Usuń</button></a></th>";
-
-
-                    }
-                } else {
-                    echo "<div class=\"alert alert-warning\">
-                            <strong>Twój koszyk jest pusty</strong>
-                          </div>";
-                }
-                ?>
-                </tbody>
-            </table>
-        </div>
-
-        <div class="row">
-            <div class="col-lg-10 text-right">
-                <span style="font-size: 20px">Do zapłaty: <?php
-                    $toPay = 0;
-                    foreach ($items as $item) {
-                        $toPay += $item->getPrice() * $item->getQuantity();
-                    }
-                    echo $toPay;
-                    ?> zł</span>
-            </div>
-            <div class="col-lg-2">
-                <a href="order.php?action=new">
-                    <button class="btn btn-success">Zamów</button>
-                </a>
-            </div>
-        </div>
+        ?>
     </div>
+    </div>
+
 </section>
 
 </body>

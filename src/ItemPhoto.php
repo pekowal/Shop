@@ -62,7 +62,7 @@ class ItemPhoto
     }
 
 
-
+//funkcja powinna być statyczna :(
     public function loadAllPhotosOfItemFromDB(mysqli $conn, $idItem){
         $toReturn = [];
         $sql = "SELECT * FROM Items_photos WHERE id_item=$idItem";

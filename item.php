@@ -29,9 +29,7 @@ if (isset($_GET['id'])) {
 if (!empty($_POST)) {
     $_SESSION['cart'][] = array('id' => $itemToShow->getId(),
         'quantity' => $_POST['quantity']);
-    var_dump($_SESSION);
-
-   // unset($_SESSION['cart']);
+    //var_dump($_SESSION);
 }
 
 ?>
@@ -103,6 +101,7 @@ if (!empty($_POST)) {
                         echo "<ul class=\"dropdown-menu\">";
                         echo "<li><a href='editUser.php'>Edytuj profil</a></li>";
                         echo "<li><a href='order.php'>Zamówienia</a></li>";
+                        echo "<li><a href='messages.php'>Wiadomości</a></li>";
                         echo "<li><a href='logout.php'>Wyloguj</a></li>";
                         echo "</ul>";
                     } else {

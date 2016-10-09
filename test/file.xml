@@ -1,0 +1,165 @@
+<?xml version="1.0"?>
+<mysqldump xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<database name="ShopTDD">
+	<table_data name="Admins">
+	<row>
+		<field name="id">2</field>
+		<field name="email">pekowal@gmail.com</field>
+		<field name="hassed_pass">$2y$10$8nNp73rrPaLfI4e2o0QXbeHverSejt5uXg26Eu2FbWmDCQ8xkJBdi</field>
+	</row>
+	</table_data>
+	<table_data name="Items">
+	<row>
+		<field name="id">7</field>
+		<field name="id_group">8</field>
+		<field name="name">Nokia 3310</field>
+		<field name="description">Nowa</field>
+		<field name="price">30</field>
+		<field name="quantity">100</field>
+	</row>
+	<row>
+		<field name="id">22</field>
+		<field name="id_group">5</field>
+		<field name="name">PiÅ‚ka Adidas</field>
+		<field name="description">NAjnowsza pilka z mistrzostw wyprodukowana w TAjwanie. KopaÅ‚ niÄ… sam Messi. Szyta w nowej technologi dual panel co gwarantuje wieksza przyczepnosc oraz</field>
+		<field name="price">50</field>
+		<field name="quantity">10</field>
+	</row>
+	<row>
+		<field name="id">23</field>
+		<field name="id_group">5</field>
+		<field name="name">Rower</field>
+		<field name="description">nowy</field>
+		<field name="price">1000</field>
+		<field name="quantity">2</field>
+	</row>
+	<row>
+		<field name="id">24</field>
+		<field name="id_group">4</field>
+		<field name="name">Music CD</field>
+		<field name="description"></field>
+		<field name="price">30</field>
+		<field name="quantity">20</field>
+	</row>
+	</table_data>
+	<table_data name="Items_group">
+	<row>
+		<field name="id">2</field>
+		<field name="name">Moda i uroda</field>
+	</row>
+	<row>
+		<field name="id">4</field>
+		<field name="name">Kultura i rozrywka</field>
+	</row>
+	<row>
+		<field name="id">5</field>
+		<field name="name">Sport i wypoczynek</field>
+	</row>
+	<row>
+		<field name="id">6</field>
+		<field name="name">Motoryzacja</field>
+	</row>
+	<row>
+		<field name="id">7</field>
+		<field name="name">Kolekcje i sztuka</field>
+	</row>
+	<row>
+		<field name="id">8</field>
+		<field name="name">Elektronika</field>
+	</row>
+	</table_data>
+	<table_data name="Items_photos">
+	<row>
+		<field name="id">7</field>
+		<field name="id_item">22</field>
+		<field name="src">./itemPhotos/22/978e0b3c4da8d0eacb482fa8ec89306b.jpeg</field>
+	</row>
+	<row>
+		<field name="id">8</field>
+		<field name="id_item">23</field>
+		<field name="src">./itemPhotos/23/c7925004b78797eb227ec2383024909a.jpeg</field>
+	</row>
+	<row>
+		<field name="id">14</field>
+		<field name="id_item">7</field>
+		<field name="src">./itemPhotos/7/d285f7d7e9699be879d10ad32836bad2.jpeg</field>
+	</row>
+	</table_data>
+	<table_data name="Messages">
+	</table_data>
+	<table_data name="Orders">
+	<row>
+		<field name="id">22</field>
+		<field name="id_user">12</field>
+		<field name="status">OczekujÄ…cy</field>
+		<field name="payment_type">Przelew</field>
+		<field name="order_date">2016-09-08 12:41:47</field>
+	</row>
+	<row>
+		<field name="id">23</field>
+		<field name="id_user">12</field>
+		<field name="status">OczekujÄ…cy</field>
+		<field name="payment_type">Za pobraniem</field>
+		<field name="order_date">2016-09-09 08:56:54</field>
+	</row>
+	<row>
+		<field name="id">24</field>
+		<field name="id_user">12</field>
+		<field name="status">OczekujÄ…cy</field>
+		<field name="payment_type">OdbiÃ³r osobisty</field>
+		<field name="order_date">2016-09-24 19:09:36</field>
+	</row>
+	<row>
+		<field name="id">25</field>
+		<field name="id_user">12</field>
+		<field name="status">OczekujÄ…cy</field>
+		<field name="payment_type">Przelew</field>
+		<field name="order_date">2016-09-25 00:14:26</field>
+	</row>
+	</table_data>
+	<table_data name="Product_Orders">
+	<row>
+		<field name="id">2</field>
+		<field name="id_item">22</field>
+		<field name="id_order">22</field>
+		<field name="quantity">1</field>
+	</row>
+	<row>
+		<field name="id">3</field>
+		<field name="id_item">22</field>
+		<field name="id_order">23</field>
+		<field name="quantity">1</field>
+	</row>
+	<row>
+		<field name="id">4</field>
+		<field name="id_item">23</field>
+		<field name="id_order">24</field>
+		<field name="quantity">2</field>
+	</row>
+	<row>
+		<field name="id">5</field>
+		<field name="id_item">7</field>
+		<field name="id_order">24</field>
+		<field name="quantity">1</field>
+	</row>
+	<row>
+		<field name="id">6</field>
+		<field name="id_item">7</field>
+		<field name="id_order">25</field>
+		<field name="quantity">10</field>
+	</row>
+	</table_data>
+	<table_data name="Users">
+	<row>
+		<field name="id">12</field>
+		<field name="name">PrzemysÅ‚aw</field>
+		<field name="surname">Kowalczyk</field>
+		<field name="email">kajrokolo@gmail.com</field>
+		<field name="hassed_pass">$2y$10$Df3yBDjPBN9WSxl5cbCVVe/S7YGXhA0ojIOTMrot8j0MotVRCcdJS</field>
+		<field name="address">Warszawska 105/152</field>
+		<field name="register_date">2016-09-06 10:33:59</field>
+		<field name="is_active">1</field>
+	</row>
+	</table_data>
+</database>
+</mysqldump>

@@ -1,6 +1,6 @@
 <?php
 
-require_once './src/connectionDB.php';
+require_once 'connectionDB.php';
 
 
 if (isset($_SESSION['loggedAdminId'])) {
@@ -13,21 +13,9 @@ if (isset($_SESSION['loggedAdminId'])) {
     header("Location:panel.php");
 }
 
-
-if (isset($_GET['idToDelete'])) {
-    $userToDelete = new User();
-    $userToDelete->loadFromDB($conn, $_GET['idToDelete']);
-    $userToDelete->deleteFromDB($conn);
+if (isset($_POST)) {
+    var_dump($_POST);
 }
-
-if (isset($_GET['id'])) {
-    $userToEdit = new User();
-    $userToEdit->loadFromDB($conn, $_GET['id']);
-
-}
-
-
-$allUsers = User::GetAllUsers($conn);
 
 ?>
 
@@ -38,7 +26,7 @@ $allUsers = User::GetAllUsers($conn);
     <meta charset="UTF-8">
     <title>Shop</title>
 
-    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
@@ -60,7 +48,7 @@ $allUsers = User::GetAllUsers($conn);
             </button>
             <ul class="nav navbar-nav">
                 <li class="active">
-                    <a class="navbar-brand" href="index.php">Shop</a>
+                    <a class="navbar-brand" href="/Shop/index.php">Shop</a>
                 </li>
             </ul>
         </div>
@@ -78,7 +66,7 @@ $allUsers = User::GetAllUsers($conn);
                 <?php
                 if (isset($_SESSION['loggedAdminId'])) {
                     echo "<li><a href='panel.php'>" . $loggedAdmin->getEmial() . "</a></li>";
-                    echo "<li><a href='logout.php'>Wyloguj</a></li>";
+                    echo "<li><a href='../logout.php'>Wyloguj</a></li>";
                 }
 
                 ?>
@@ -88,58 +76,32 @@ $allUsers = User::GetAllUsers($conn);
         </div>
 
 </nav>
-
 <section>
     <div class="container">
         <div class="row">
-            <?php
-            if(isset($_GET['id'])){
-
-                echo "";
-            }
-            ?>
+            <form class="form-horizontal" action="editOrders.php" method="post" >
+                <label>Zmiana statusu zamówienia</label>
+                <input hidden value="<?php echo $_GET['idUser'] ?>" name="idUser">
+                <input hidden value="<?php echo $_GET['idOrder'] ?>" name="idOrder">
+                <div class="form-group">
+                    <select class="form-control" name="statusOrder">
+                        <option>Oczekujący</option>
+                        <option>W realizacji</option>
+                        <option>Ukończone</option>
+                        <option>Paczka wysłana</option>
+                    </select>
+                </div>
+                <label>Treść wiadomości</label>
+                <div class="form-group">
+                    <textarea class="form-control" name="textMessage" type="text">
+                        </textarea>
+                </div>
+                <button type="submit" class="btn btn-success">Wyślij</button>
+            </form>
         </div>
     </div>
 </section>
 
-<section>
-    <div class="container">
-        <div class="row">
-            <table class="table table-striped table-bordered table-hover">
-                <thead>
-                <tr>
-                    <th>Id:</th>
-                    <th>Imię:</th>
-                    <th>Nazwisko:</th>
-                    <th>Email:</th>
-                    <th>Adres:</th>
-                    <th>Data utworzenia:</th>
-                    <th>Edycja:</th>
-                </tr>
-                </thead>
-                <tbody>
-                <?php
-                foreach ($allUsers as $user) {
-                    echo "<tr>";
-                    echo "<th>" . $user->getId() . "</th>";
-                    echo "<th>" . $user->getName() . "</th>";
-                    echo "<th>" . $user->getSurname() . "</th>";
-                    echo "<th>" . $user->getEmail() . "</th>";
-                    echo "<th>" . $user->getAddress() . "</th>";
-                    echo "<th>" . $user->getCreationDate() . "</th>";
-                    echo "<th><a href='editUsers.php?id={$user->getId()}'><button class='btn btn-info'>Edytuj</button></a>
-                          <a href='editUsers.php?idToDelete={$user->getId()}'><button class='btn btn-danger'>Usuń</button></a></th>";
-                    echo "</tr>";
-                }
-
-                ?>
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-
-</section>
 
 </body>
 </html>
@@ -150,7 +112,3 @@ $conn->close();
 $conn = null;
 
 ?>
-
-
-
-

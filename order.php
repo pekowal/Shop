@@ -35,34 +35,32 @@ if (isset($_SESSION['cart'])) {
     }
 
 }
+
 if (!empty($_POST && !empty($_SESSION['cart']))) {
+
     $order = new Order();
     $order->setIdUser($loggedUserid);
     $order->setPaymentType($_POST['paymentType']);
+    $order->setCost($_POST['cost']);
+    //var_dump($order);
     $order->saveToDb($conn);
 
     foreach ($items as $item) {
-        $itemOrder = new ItemOrders();
+        $itemOrder = new ItemOrder();
         $itemOrder->setIdItem($item->getId());
         $itemOrder->setQuantity($item->getQuantity());
         $itemOrder->setIdOrder($order->getId());
         $itemOrder->saveToDb($conn);
-        var_dump($itemOrder);
+        //var_dump($itemOrder);
     }
 
     echo "Zamówienie zosotało przekazane do realizacji";
     unset($_SESSION['cart']);
-} else {
-
 }
 
-if (isset($_GET['orderId'])) {
-    $itemsInOrder = ItemOrder::GetAllItemsOfOrder($conn, $_GET['orderId']);
-    var_dump($itemsInOrder);
-}
 
 $orderFromUser = Order::GetAllOrdersFromUser($conn, $loggedUserid);
-
+$cost = 0;
 
 ?>
 
@@ -133,6 +131,7 @@ $orderFromUser = Order::GetAllOrdersFromUser($conn, $loggedUserid);
                         echo "<ul class=\"dropdown-menu\">";
                         echo "<li><a href='editUser.php'>Edytuj profil</a></li>";
                         echo "<li><a href='order.php'>Zamówienia</a></li>";
+                        echo "<li><a href='messages.php'>Wiadomości</a></li>";
                         echo "<li><a href='logout.php'>Wyloguj</a></li>";
                         echo "</ul>";
                     } else {
@@ -174,7 +173,7 @@ $orderFromUser = Order::GetAllOrdersFromUser($conn, $loggedUserid);
 
                 foreach ($items as $item) {
                     $key = array_search($item, $items);
-
+                    $cost += $item->getQuantity() * $item->getPrice();
                     echo "<tr>";
                     echo "<th>{$item->getName()}</th>";
                     echo "<th>{$item->getPrice()} zł</th>";
@@ -192,6 +191,7 @@ $orderFromUser = Order::GetAllOrdersFromUser($conn, $loggedUserid);
             echo '<th>Nr</th>';
             echo '<th>Status</th>';
             echo '<th>Rodzaj płatności</th>';
+            echo '<th>Koszt:</th>';
             echo '<th>Data złożenia zamówienia</th><th></th></tr></thead>';
             echo '<tbody>';
             foreach ($orderFromUser as $order) {
@@ -199,7 +199,8 @@ $orderFromUser = Order::GetAllOrdersFromUser($conn, $loggedUserid);
                 echo "<th>{$order->getId()}</th>";
                 echo "<th>{$order->getStatus()}</th>";
                 echo "<th>{$order->getPaymentType()}</th>";
-                echo "<th>{$order->getOrderDate()}</th><th><a href='order.php?orderId={$order->getId()}'><button class='btn btn-success'>Pokaż</button></a> </th></tr>";
+                echo "<th>{$order->getCost()} zł</th>";
+                echo "<th>{$order->getOrderDate()}</th><th><a href='showOrder.php?orderId={$order->getId()}'><button class='btn btn-success'>Pokaż</button></a> </th></tr>";
             }
             echo "</tobody>";
         }
@@ -207,15 +208,30 @@ $orderFromUser = Order::GetAllOrdersFromUser($conn, $loggedUserid);
 
         <div class="row">
             <div class="col-lg-4">
-                <span style="font-size: 20px;">Adres do wysyłki:</span><br>
-                <span><?php echo $loggedUser->getName() . ' ' . $loggedUser->getSurname() ?></span><br>
-                <span><?php echo $loggedUser->getAddress() ?></span>
+                <?php
+                if (isset($_GET['action'])) {
+                    echo "<span style=\"font-size: 20px;\">Adres do wysyłki:</span><br>
+                <span>{$loggedUser->getName()} {$loggedUser->getSurname()}</span><br>
+                <span>{$loggedUser->getAddress()}</span>";
+                }
+                ?>
+
+            </div>
+            <div class="col-lg-4">
+                <?php
+                if (isset($_GET['action'])) {
+                    echo "<h3>Do zapłaty: ";
+                    echo $cost;
+                    echo "zł</h3>";
+                }
+                ?>
             </div>
             <?php
             if (isset($_GET['action'])) {
-                echo "<div class=\"col-lg-6\">
+                echo "<div class=\"col-lg-4\">
                         <form action='order.php' method='post'>
                                 <label>Metoda płatności</label>
+                                <input type='hidden' value='$cost' name='cost'>
                                 <select name='paymentType'>
                                   <option value='Przelew'>Przelew</option>
                                   <option value='Za pobraniem'>Za pobraniem</option>
@@ -241,6 +257,8 @@ $orderFromUser = Order::GetAllOrdersFromUser($conn, $loggedUserid);
 </html>
 
 <?php
+
+
 
 $conn->close();
 $conn = null;

@@ -92,6 +92,7 @@ $photo4 = ItemPhoto::LoadOnePhotoOfItemFromDB($conn, $fourRandomItems[3]->getId(
                         echo "<ul class=\"dropdown-menu\">";
                         echo "<li><a href='editUser.php'>Edytuj profil</a></li>";
                         echo "<li><a href='order.php'>Zamówienia</a></li>";
+                        echo "<li><a href='messages.php'>Wiadomości</a></li>";
                         echo "<li><a href='logout.php'>Wyloguj</a></li>";
                         echo "</ul>";
                     } else {

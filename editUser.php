@@ -100,6 +100,8 @@ if (!empty($_POST)) {
                        aria-expanded=\"false\">{$loggedUser->getEmail()}<span class=\"caret\"></span></a>";
                         echo "<ul class=\"dropdown-menu\">";
                         echo "<li><a href='editUser.php'>Edytuj profil</a></li>";
+                        echo "<li><a href='order.php'>Zamówienia</a></li>";
+                        echo "<li><a href='messages.php'>Wiadomości</a></li>";
                         echo "<li><a href='logout.php'>Wyloguj</a></li>";
                         echo "</ul>";
                     } else {
@@ -112,6 +114,8 @@ if (!empty($_POST)) {
                              <a href = 'register.php' > Rejestracja</a >
                           </li>";
                 } ?>
+                <li><a href="cart.php"><span class="glyphicon glyphicon-shopping-cart"></span></a></li>
+
             </ul>
         </div><!-- /.navbar-collapse -->
     </div><!-- /.container-fluid -->

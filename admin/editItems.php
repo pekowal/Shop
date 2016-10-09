@@ -1,6 +1,6 @@
 <?php
 
-require_once './src/connectionDB.php';
+require_once 'connectionDB.php';
 
 
 if (isset($_SESSION['loggedAdminId'])) {
@@ -76,20 +76,23 @@ if (!empty($_FILES['userfile']['name'])) {
     }
 
 
-    $saveDir = './' . $dirName . '/' . $secDir;
+    $saveDir = '../' . $dirName . '/' . $secDir;
 
     if (!is_dir($saveDir)) {
         mkdir($saveDir, 0777, true);
     }
 
+
     $saveFile = $saveDir . '/' . basename($_FILES['userfile']['name']);
 
-    if (!is_file($saveFile)) {
+
+    $dataSrc = $dirName.'/'.$secDir.'/'.basename($_FILES['userfile']['name']);
+    var_dump($dataSrc);
         $itemPhoto = new ItemPhoto();
+
         $itemPhoto->setIdItem($secDir);
-        $itemPhoto->setSrc($saveFile);
+        $itemPhoto->setSrc($dataSrc);
         $itemPhoto->saveToDB($conn);
-    }
 
     if (move_uploaded_file($_FILES['userfile']['tmp_name'], $saveFile)) {
         echo 'File is valid and was succesfully uploaded';
@@ -118,8 +121,8 @@ $allGroups = ItemGroup::GetAllGroups($conn);
     <meta charset="UTF-8">
     <title>Shop</title>
 
-    <link href="css/bootstrap.min.css" rel="stylesheet">
-    <link href="css/custom.css" rel="stylesheet">
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
+    <link href="../css/custom.css" rel="stylesheet">
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
@@ -140,7 +143,7 @@ $allGroups = ItemGroup::GetAllGroups($conn);
             </button>
             <ul class="nav navbar-nav">
                 <li class="active">
-                    <a class="navbar-brand" href="index.php">Shop</a>
+                    <a class="navbar-brand" href="/Shop/index.php">Shop</a>
                 </li>
             </ul>
         </div>
@@ -157,7 +160,7 @@ $allGroups = ItemGroup::GetAllGroups($conn);
                 <?php
                 if (isset($_SESSION['loggedAdminId'])) {
                     echo "<li><a href='panel.php'>" . $loggedAdmin->getEmial() . "</a></li>";
-                    echo "<li><a href='logout.php'>Wyloguj</a></li>";
+                    echo "<li><a href='../logout.php'>Wyloguj</a></li>";
                 }
 
                 ?>
@@ -298,7 +301,7 @@ $allGroups = ItemGroup::GetAllGroups($conn);
                 foreach ($allPhotosOfItem as $photo) {
                     echo "<div class='col-sm-2 text-center'>
 
-                <img class='deleteImg' src='{$photo->getSrc()}' height='100' width='100'><br>
+                <img class='deleteImg' src='../{$photo->getSrc()}' height='100' width='100'><br>
                 <a href='editItems.php?id={$itemToEdit->getId()}&idPhoto={$photo->getId()}'>Usuń</a></div>";
                 }
 

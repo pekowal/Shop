@@ -1,6 +1,6 @@
 <?php
 
-require_once './src/connectionDB.php';
+require_once 'connectionDB.php';
 
 
 if (isset($_SESSION['loggedAdminId'])) {
@@ -13,31 +13,21 @@ if (isset($_SESSION['loggedAdminId'])) {
     header("Location:panel.php");
 }
 
-if(isset($_GET['id'])){
-    $idGroup = $_GET['id'];
-    $groupToEdit = new ItemGroup();
-    $groupToEdit->loadFromDB($conn, $idGroup);
 
-    if (isset($_GET['delete'])){
-        $groupToEdit->deleteFromDB($conn);
-    }
-
+if (isset($_GET['idToDelete'])) {
+    $userToDelete = new User();
+    $userToDelete->loadFromDB($conn, $_GET['idToDelete']);
+    $userToDelete->deleteFromDB($conn);
 }
 
-if(!empty($_POST)){
-    if (isset($_GET['id'])){
-        $groupToEdit->setName($_POST['name']);
-        $groupToEdit->saveToDB($conn);
-    }else{
-        $newGroup = new ItemGroup();
-        $newGroup->setName($_POST['name']);
-        $newGroup->saveToDB($conn);
-    }
+if (isset($_GET['id'])) {
+    $userToEdit = new User();
+    $userToEdit->loadFromDB($conn, $_GET['id']);
 
 }
 
 
-
+$allUsers = User::GetAllUsers($conn);
 
 ?>
 
@@ -48,7 +38,7 @@ if(!empty($_POST)){
     <meta charset="UTF-8">
     <title>Shop</title>
 
-    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
@@ -70,7 +60,7 @@ if(!empty($_POST)){
             </button>
             <ul class="nav navbar-nav">
                 <li class="active">
-                    <a class="navbar-brand" href="index.php">Shop</a>
+                    <a class="navbar-brand" href="/Shop/index.php">Shop</a>
                 </li>
             </ul>
         </div>
@@ -87,8 +77,8 @@ if(!empty($_POST)){
 
                 <?php
                 if (isset($_SESSION['loggedAdminId'])) {
-                    echo "<li><a href='panel.php'>".$loggedAdmin->getEmial()."</a></li>";
-                    echo "<li><a href='logout.php'>Wyloguj</a></li>";
+                    echo "<li><a href='panel.php'>" . $loggedAdmin->getEmial() . "</a></li>";
+                    echo "<li><a href='../logout.php'>Wyloguj</a></li>";
                 }
 
                 ?>
@@ -98,35 +88,37 @@ if(!empty($_POST)){
         </div>
 
 </nav>
+
 <section>
     <div class="container">
         <div class="row">
             <?php
-            if (isset($_GET['id'])){
-                echo "<form class='form-horizontal' method='post' action='editGroups.php?{$groupToEdit->getId()}'>";
-                echo "<div class=\"form-group\">
-                            <label class=\"col-sm-2 control-label\">Nazwa grupy:</label>
-                            <div class=\"col-sm-10\">
-                              <input class='form-control' type='text' name='name' value='{$groupToEdit->getName()}'>
-                            </div>
-                      </div>";
-                echo "<div class=\"col-sm-offset-2 col-sm-10\"><button type=\"submit\" class=\"btn btn-default\">Zapisz zmiany</button></div><br>";
-            }else{
-                echo "<form class='form-horizontal' method='post' action='editGroups.php'>";
-                echo "<div class=\"form-group\">
-                            <label class=\"col-sm-2 control-label\">Nazwa grupy:</label>
-                            <div class=\"col-sm-10\">
-                              <input class='form-control' type='text' name='name' placeholder='Podaj nazwę grupy'>
-                            </div>
-                      </div>";
-                echo "<div class=\"col-sm-offset-2 col-sm-10\"><button type=\"submit\" class=\"btn btn-default\">Dodaj grupę</button></div>";
+            if(isset($_GET['id'])){
+                $orderFromUser = Order::GetAllOrdersFromUser($conn, $_GET['id']);
+                echo '<table class="table">';
+                echo '<thead>';
+                echo '<tr>';
+                echo '<th>Nr</th>';
+                echo '<th>Status</th>';
+                echo '<th>Rodzaj płatności</th>';
+                echo '<th>Koszt:</th>';
+                echo '<th>Data złożenia zamówienia</th><th></th></tr></thead>';
+                echo '<tbody>';
+                foreach ($orderFromUser as $order) {
+                    echo "<tr>";
+                    echo "<th>{$order->getId()}</th>";
+                    echo "<th>{$order->getStatus()}</th>";
+                    echo "<th>{$order->getPaymentType()}</th>";
+                    echo "<th>{$order->getCost()} zł</th>";
+                    echo "<th>{$order->getOrderDate()}</th><th><a href='../showOrder.php?orderId={$order->getId()}'><button class='btn btn-success'>Pokaż</button></a> </th></tr>";
+                }
+                echo "</tobody>";
             }
             ?>
         </div>
     </div>
 </section>
-<br>
-<br>
+
 <section>
     <div class="container">
         <div class="row">
@@ -134,19 +126,27 @@ if(!empty($_POST)){
                 <thead>
                 <tr>
                     <th>Id:</th>
-                    <th>Nazwa:</th>
+                    <th>Imię:</th>
+                    <th>Nazwisko:</th>
+                    <th>Email:</th>
+                    <th>Adres:</th>
+                    <th>Data utworzenia:</th>
                     <th>Edycja:</th>
                 </tr>
                 </thead>
                 <tbody>
                 <?php
-                $allGroups = ItemGroup::GetAllGroups($conn);
-                foreach ($allGroups as $group) {
+                foreach ($allUsers as $user) {
                     echo "<tr>";
-                    echo "<th>" . $group->getId() . "</th>";
-                    echo "<th>" . $group->getName() . "</th>";
-                    echo "<th><a href='editGroups.php?id={$group->getId()}'>Edytuj</a>
-                              <a href='editGroups.php?id={$group->getId()}&delete=1'>Usuń</a></th>";
+                    echo "<th>" . $user->getId() . "</th>";
+                    echo "<th>" . $user->getName() . "</th>";
+                    echo "<th>" . $user->getSurname() . "</th>";
+                    echo "<th>" . $user->getEmail() . "</th>";
+                    echo "<th>" . $user->getAddress() . "</th>";
+                    echo "<th>" . $user->getCreationDate() . "</th>";
+                    echo "<th><a href='editUsers.php?id={$user->getId()}'><button class='btn btn-info'>Pokaż</button></a>
+                          <a href='editUsers.php?idToDelete={$user->getId()}'><button class='btn btn-danger'>Usuń</button></a>
+                          </th>";
                     echo "</tr>";
                 }
 
@@ -159,8 +159,6 @@ if(!empty($_POST)){
 
 </section>
 
-
-
 </body>
 </html>
 
@@ -170,3 +168,7 @@ $conn->close();
 $conn = null;
 
 ?>
+
+
+
+

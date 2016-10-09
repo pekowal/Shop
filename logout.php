@@ -2,11 +2,12 @@
 
 session_start();
 
-if(isset($_SESSION['loggedAdminId'])){
-    unset($_SESSION['loggedAdminId']);
-    header("Location:panel.php");
-}else{
+if(isset($_SESSION['loggedUserId'])){
     unset($_SESSION['loggedUserId']);
     header("Location:index.php");
+}else{
+
+    unset($_SESSION['loggedAdminId']);
+    header("Location:admin/panel.php");
 }
 

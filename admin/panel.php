@@ -1,6 +1,6 @@
 <?php
 
-require_once './src/connectionDB.php';
+require_once 'connectionDB.php';
 
 
 if (isset($_SESSION['loggedAdminId'])) {
@@ -44,7 +44,7 @@ if (!empty($_POST)) {
     <meta charset="UTF-8">
     <title>Shop</title>
 
-    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
@@ -66,7 +66,7 @@ if (!empty($_POST)) {
             </button>
             <ul class="nav navbar-nav">
                 <li class="active">
-                    <a class="navbar-brand" href="index.php">Shop</a>
+                    <a class="navbar-brand" href="/Shop/index.php">Shop</a>
                 </li>
             </ul>
         </div>
@@ -84,7 +84,7 @@ if (!empty($_POST)) {
                     <?php
                     if (isset($_SESSION['loggedAdminId'])) {
                         echo "<li><a href='panel.php'>".$loggedAdmin->getEmial()."</a></li>";
-                        echo "<li><a href='logout.php'>Wyloguj</a></li>";
+                        echo "<li><a href='../logout.php'>Wyloguj</a></li>";
                     }
                                        
                     ?>
